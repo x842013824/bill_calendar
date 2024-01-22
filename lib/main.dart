@@ -1,45 +1,90 @@
 import 'package:flutter/material.dart';
-import './widghts/user_transactions.dart';
+import './models/transaction.dart';
+import './widghts/new_transaction.dart';
+import './widghts/transaction_list.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final List<Transaction> _transactions = [
+    Transaction(
+      uid: '1',
+      title: 'New Shoes',
+      amount: 69.99,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      uid: '2',
+      title: 'Weekly Groceries',
+      amount: 16.53,
+      date: DateTime.now(),
+    ),
+  ];
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+  void _addTransaction(({String title, double amount}) record) {
+    final transaction = Transaction(
+      uid: DateTime.now().toString(),
+      title: record.title,
+      amount: record.amount,
+      date: DateTime.now(),
+    );
+
+    setState(() => _transactions.add(transaction));
+  }
+
+  void _startAddNewTransaction(BuildContext context) {
+    _scaffoldKey.currentState!.showBottomSheet(
+        (context) => NewTransaction(_addTransaction),
+        enableDrag: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     const title = 'Bill Calendar';
 
     return MaterialApp(
-        title: title,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          appBarTheme: const AppBarTheme(
-            color: Colors.deepPurple,
-            titleTextStyle: TextStyle(color: Colors.white),
+      title: title,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+        appBarTheme: AppBarTheme(
+          backgroundColor: ThemeData().colorScheme.primary,
+          titleTextStyle: TextStyle(
+            color: ThemeData().colorScheme.onPrimary,
+            fontSize: 24,
           ),
-          useMaterial3: true,
         ),
-        home: const MyHomePage(title: title));
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  final String title;
-
-  const MyHomePage({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
+        useMaterial3: true,
       ),
-      body: const Column(
-        children: [UserTransactions()],
+      home: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(title: const Text(title), actions: [
+          IconButton(
+            onPressed: () => _startAddNewTransaction(context),
+            icon: const Icon(Icons.add),
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ]),
+        body: Column(
+          children: [TransactionList(_transactions)],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _startAddNewTransaction(context),
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }
