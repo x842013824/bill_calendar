@@ -53,29 +53,38 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     const title = 'Bill Calendar';
 
+    final colorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
+
     return MaterialApp(
       title: title,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+        useMaterial3: true,
+        colorScheme: colorScheme,
         appBarTheme: AppBarTheme(
-          backgroundColor: ThemeData().colorScheme.primary,
+          backgroundColor: colorScheme.primary,
           titleTextStyle: TextStyle(
-            color: ThemeData().colorScheme.onPrimary,
+            color: colorScheme.onPrimary,
             fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+          iconTheme: IconThemeData(
+            color: colorScheme.onPrimary,
+            size: 32,
           ),
         ),
-        useMaterial3: true,
       ),
       home: Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(title: const Text(title), actions: [
-          IconButton(
-            onPressed: () => _startAddNewTransaction(context),
-            icon: const Icon(Icons.add),
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
-        ]),
+        appBar: AppBar(
+          title: const Text(title),
+          actions: [
+            IconButton(
+              onPressed: () => _startAddNewTransaction(context),
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        ),
         body: Column(
           children: [TransactionList(_transactions)],
         ),
