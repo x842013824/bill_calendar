@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './models/transaction.dart';
+import './widghts/chart_card.dart';
 import './widghts/new_transaction.dart';
 import './widghts/transaction_list.dart';
 
@@ -31,6 +32,13 @@ class _MyAppState extends State<MyApp> {
   ];
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+  List<Transaction> get _recentTransations {
+    final lastDate = DateTime.now().subtract(const Duration(days: 7));
+    return _transactions.where((tx) {
+      return tx.date.isAfter(lastDate);
+    }).toList();
+  }
 
   void _addTransaction(({String title, double amount}) record) {
     final transaction = Transaction(
@@ -86,7 +94,10 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
         body: Column(
-          children: [TransactionList(_transactions)],
+          children: [
+            ChartCard(_recentTransations),
+            TransactionList(_transactions),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _startAddNewTransaction(context),
