@@ -22,7 +22,7 @@ class ChartCard extends StatelessWidget {
       });
 
       return (day: DateFormat.E().format(weekday), total: total);
-    }).toList();
+    }).reversed.toList();
   }
 
   double get totalAmount {

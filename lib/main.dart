@@ -40,12 +40,12 @@ class _MyAppState extends State<MyApp> {
     }).toList();
   }
 
-  void _addTransaction(({String title, double amount}) record) {
+  void _addTransaction(({String title, double amount, DateTime date}) record) {
     final transaction = Transaction(
       uid: DateTime.now().toString(),
       title: record.title,
       amount: record.amount,
-      date: DateTime.now(),
+      date: record.date,
     );
 
     setState(() => _transactions.add(transaction));
