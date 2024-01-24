@@ -3,63 +3,62 @@ import 'package:intl/intl.dart';
 import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
-  final List<Transaction> _transactions;
+  final List<Transaction> data;
 
-  const TransactionList(this._transactions, {super.key});
+  final Function(String uid) onDelete;
+
+  const TransactionList({
+    super.key,
+    required this.data,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.builder(
         itemBuilder: (context, index) {
-          final tx = _transactions[index];
+          final tx = data[index];
           return Card(
-            child: Row(
-              children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 16,
-                  ),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 2,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
+            elevation: 5,
+            child: ListTile(
+              leading: CircleAvatar(
+                radius: 28,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                child: FittedBox(
                   child: Text(
                     '\$${tx.amount.toStringAsFixed(2)}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      tx.title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      DateFormat('yyyy-MM-dd').format(tx.date),
-                      style: const TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
+              ),
+              title: Text(
+                tx.title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
+              subtitle: Text(
+                DateFormat('yyyy-MM-dd').format(tx.date),
+                style: const TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+              trailing: IconButton(
+                onPressed: () => onDelete(tx.uid),
+                icon: Icon(
+                  Icons.delete,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
             ),
           );
         },
-        itemCount: _transactions.length,
+        itemCount: data.length,
       ),
     );
   }

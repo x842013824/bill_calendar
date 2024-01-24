@@ -51,6 +51,12 @@ class _MyAppState extends State<MyApp> {
     setState(() => _transactions.add(transaction));
   }
 
+  void _deleteTransaction(String uid) {
+    setState(() {
+      _transactions.removeWhere((tx) => tx.uid == uid);
+    });
+  }
+
   void _startAddNewTransaction(BuildContext context) {
     _scaffoldKey.currentState!.showBottomSheet(
         (context) => NewTransaction(_addTransaction),
@@ -86,17 +92,22 @@ class _MyAppState extends State<MyApp> {
         key: _scaffoldKey,
         appBar: AppBar(
           title: const Text(title),
+          // centerTitle: true,
           actions: [
             IconButton(
               onPressed: () => _startAddNewTransaction(context),
               icon: const Icon(Icons.add),
             ),
           ],
+          automaticallyImplyLeading: false,
         ),
         body: Column(
           children: [
             ChartCard(_recentTransations),
-            TransactionList(_transactions),
+            TransactionList(
+              data: _transactions,
+              onDelete: _deleteTransaction,
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
